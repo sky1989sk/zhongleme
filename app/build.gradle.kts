@@ -41,6 +41,13 @@ android {
     }
 }
 
+android.applicationVariants.configureEach {
+    outputs.configureEach {
+        (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+            "zhongleme-${name}.apk"
+    }
+}
+
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
     implementation(composeBom)
