@@ -27,6 +27,8 @@ LotteryApp is an Android app for generating and managing lottery number combinat
 
 - **UI:** Jetpack Compose with Material3; optional theme styles (Material, Harmony, iOS-like)
 
+- **In-app update:** Optional version check on launch; if a newer version is available, a dialog shows release notes and offers to download/install the APK. Requires a version server (see `update-server/`) and `UPDATE_SERVER_BASE_URL` in the app build.
+
 ### Project Structure
 
 ```
@@ -75,6 +77,10 @@ From project root (use `gradlew.bat` on Windows if wrapper exists):
 
 **Requirements:** JDK 17+, Android SDK (compileSdk 35, minSdk 26).
 
+**Version server (optional):** To enable in-app update, deploy `update-server/` (e.g. on Ubuntu), then set `buildConfigField("String", "UPDATE_SERVER_BASE_URL", "\"https://your-server.com\"")` in `app/build.gradle.kts` for your release build.
+
+**Sync update-server files:** After bumping `versionCode`/`versionName` in `app/build.gradle.kts`, edit `release_notes.txt` with the changelog, then run `./gradlew syncUpdateServer` to generate and write `update-server/changelog.json` (one-click sync).
+
 ### Tech Stack
 
 | Category   | Choice                    |
@@ -110,6 +116,8 @@ LotteryApp 是一款 Android 彩票选号应用，支持**双色球**和**超级
 - **历史记录：** 本地存储，含期号（YYYYNNN）、生成时间、中奖状态；期号按财政部休市安排计算（春节、国庆）
 
 - **界面：** Jetpack Compose + Material3，可选主题风格（Material、鸿蒙风、类 iOS）
+
+- **应用内更新：** 启动时可选检测新版本；若有新版本则弹窗展示更新说明并支持下载安装。需部署 `update-server/` 并在构建时配置 `UPDATE_SERVER_BASE_URL`。
 
 ### 代码结构
 
@@ -158,6 +166,10 @@ app/src/main/java/com/lottery/app/
 ```
 
 **环境要求：** JDK 17+，Android SDK（compileSdk 35，minSdk 26）。
+
+**版本服务（可选）：** 若需应用内更新，请部署 `update-server/`（如 Ubuntu），并在 `app/build.gradle.kts` 的 release 构建中设置 `buildConfigField("String", "UPDATE_SERVER_BASE_URL", "\"https://你的服务地址\"")`。
+
+**一键同步 update-server：** 在 `app/build.gradle.kts` 中修改 `versionCode`/`versionName` 后，编辑根目录 `release_notes.txt` 填写变更说明，执行 `./gradlew syncUpdateServer` 即可生成并写入 `update-server/changelog.json`。
 
 ### 技术栈
 

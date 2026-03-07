@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +30,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lottery.app.di.AppContainer
+import com.lottery.app.ui.about.AboutScreen
+import com.lottery.app.ui.about.AboutViewModel
 import com.lottery.app.ui.history.HistoryScreen
 import com.lottery.app.ui.history.HistoryViewModel
 import com.lottery.app.ui.lottery.LotteryScreen
@@ -43,14 +46,16 @@ enum class Screen(
     val icon: ImageVector
 ) {
     Lottery("lottery", "选号", Icons.Filled.Casino),
-    History("history", "历史", Icons.Filled.History)
+    History("history", "历史", Icons.Filled.History),
+    About("about", "关于", Icons.Filled.Info)
 }
 
 @Composable
 fun LotteryNavHost(
     container: AppContainer,
     currentStyle: DesignStyle,
-    onStyleChange: (DesignStyle) -> Unit
+    onStyleChange: (DesignStyle) -> Unit,
+    onCheckUpdateRequested: (() -> Unit)? = null
 ) {
     val navController = rememberNavController()
     val screens = Screen.entries
@@ -92,6 +97,15 @@ fun LotteryNavHost(
                     )
                 )
                 HistoryScreen(viewModel = vm)
+            }
+            composable(Screen.About.route) {
+                val vm: AboutViewModel = viewModel(
+                    factory = AboutViewModel.Factory(container.updateApi)
+                )
+                AboutScreen(
+                    viewModel = vm,
+                    onCheckUpdate = onCheckUpdateRequested
+                )
             }
         }
     }

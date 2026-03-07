@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lottery.app.domain.model.*
+import com.lottery.app.domain.util.IssueCalculator
+import com.lottery.app.domain.util.PriceCalculator
 import com.lottery.app.usecase.GenerateNumbersUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +25,8 @@ data class LotteryUiState(
     val danTuoBackDan: Int = 0,
     val danTuoBackTuo: Int = 0,
     val lastResult: GenerateResult? = null,
+    val ticketCount: Int = 0,
+    val drawDate: String = "",
     val isGenerating: Boolean = false,
     val errorMessage: String? = null
 ) {
@@ -134,7 +138,16 @@ class LotteryViewModel(
                         )
                     )
                 }
-                _uiState.update { it.copy(lastResult = result, isGenerating = false) }
+                val ticketCount = PriceCalculator.calcTicketCount(result, state.lotteryType)
+                val drawDate = IssueCalculator.getNextDrawDate(state.lotteryType, System.currentTimeMillis())
+                _uiState.update {
+                    it.copy(
+                        lastResult = result,
+                        ticketCount = ticketCount,
+                        drawDate = drawDate,
+                        isGenerating = false
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(isGenerating = false, errorMessage = "生成失败: ${e.message}")

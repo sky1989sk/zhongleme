@@ -1,0 +1,26 @@
+[
+    {
+        "versionCode": 2,
+        "versionName": "1.0.2",
+        "releaseDate": "2026-03-07",
+        "releaseNotes": "\u2022 \u53f7\u7801\u751f\u6210\u540e\u65b0\u589e\u8d2d\u4e70\u6ce8\u6570\u4e0e\u5408\u8ba1\u91d1\u989d\u663e\u793a\n\u2022 \u65b0\u589e\u5f00\u5956\u65e5\u671f\u63d0\u793a\uff08\u7cbe\u786e\u5230\u4e0b\u6b21\u5f00\u5956\u65e5\uff09\n\u2022 \u652f\u6301\u666e\u901a\u3001\u590d\u5f0f\u3001\u80c6\u62d6\u4e09\u79cd\u73a9\u6cd5\u7684\u6ce8\u6570\u4e0e\u91d1\u989d\u8ba1\u7b97",
+        "downloadUrl": "",
+        "minVersionCode": 1
+    },
+    {
+        "versionCode": 1,
+        "versionName": "1.0.0",
+        "releaseDate": "2026-03-07",
+        "releaseNotes": "\u66f4\u65b0\u5185\u5bb9",
+        "downloadUrl": "",
+        "minVersionCode": 1
+    },
+    {
+        "versionCode": 1,
+        "versionName": "1.0.0",
+        "releaseDate": "2026-03-07",
+        "releaseNotes": "\u9996\u6b21\u53d1\u5e03\u3002\n- \u53cc\u8272\u7403/\u5927\u4e50\u900f\u9009\u53f7\n- \u5386\u53f2\u8bb0\u5f55\u4e0e\u671f\u53f7\uff08\u542b\u6625\u8282\u4f11\u5e02\uff09\n- \u591a\u79cd\u4e3b\u9898\uff08Material\u3001\u9e3f\u8499\u3001iOS\uff09\n- \u5e94\u7528\u5185\u66f4\u65b0",
+        "downloadUrl": "",
+        "minVersionCode": 1
+    }
+]

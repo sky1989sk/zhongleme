@@ -138,7 +138,12 @@ fun LotteryScreen(
             enter = fadeIn() + expandVertically()
         ) {
             state.lastResult?.let { result ->
-                ResultSection(lotteryType = state.lotteryType, result = result)
+                ResultSection(
+                    lotteryType = state.lotteryType,
+                    result = result,
+                    ticketCount = state.ticketCount,
+                    drawDate = state.drawDate
+                )
             }
         }
 
@@ -326,7 +331,9 @@ private fun CounterRow(
 @Composable
 private fun ResultSection(
     lotteryType: LotteryType,
-    result: GenerateResult
+    result: GenerateResult,
+    ticketCount: Int,
+    drawDate: String
 ) {
     Column {
         Text(
@@ -338,13 +345,28 @@ private fun ResultSection(
 
         when (result) {
             is GenerateResult.StandardResult -> {
-                StandardResultCard(lotteryType = lotteryType, numbers = result.numbers)
+                StandardResultCard(
+                    lotteryType = lotteryType,
+                    numbers = result.numbers,
+                    ticketCount = ticketCount,
+                    drawDate = drawDate
+                )
             }
             is GenerateResult.MultipleResult -> {
-                MultipleResultCard(lotteryType = lotteryType, numbers = result.numbers)
+                MultipleResultCard(
+                    lotteryType = lotteryType,
+                    numbers = result.numbers,
+                    ticketCount = ticketCount,
+                    drawDate = drawDate
+                )
             }
             is GenerateResult.DanTuoResult -> {
-                DanTuoResultCard(lotteryType = lotteryType, danTuo = result.danTuo)
+                DanTuoResultCard(
+                    lotteryType = lotteryType,
+                    danTuo = result.danTuo,
+                    ticketCount = ticketCount,
+                    drawDate = drawDate
+                )
             }
         }
     }
