@@ -10,3 +10,9 @@ tasks.register("syncUpdateServer") {
     description = "根据 app 当前版本与 release_notes.txt 生成并写入 update-server/changelog.json（委托 :app:syncUpdateServer）"
     dependsOn(":app:syncUpdateServer")
 }
+
+tasks.register("copyApkToUpdateServer") {
+    group = "publishing"
+    description = "将 app 的 debug APK 拷贝到 update-server/releases/{versionName}/（委托 :app:copyApkToUpdateServer）"
+    dependsOn(":app:copyApkToUpdateServer")
+}

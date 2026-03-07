@@ -1,5 +1,21 @@
 [
     {
+        "versionCode": 4,
+        "versionName": "1.0.4",
+        "releaseDate": "2026-03-07",
+        "releaseNotes": "\u2022 \u5386\u53f2\u8bb0\u5f55\u4e2d\u5c55\u793a\u5f00\u5956\u65e5\u671f\n\u2022 \u5173\u4e8e\u9875\u9690\u85cf\u5165\u53e3\uff1a\u8fde\u7eed\u70b9\u51fb\u7248\u672c\u53f7 7 \u6b21\u53ef\u914d\u7f6e\u66f4\u65b0\u670d\u52a1\u5668\u5730\u5740\u5e76\u67e5\u770b\u8fde\u63a5\u65e5\u5fd7\n\u2022 \u66f4\u65b0\u670d\u52a1\u5668\u652f\u6301\u8fd0\u884c\u65f6\u914d\u7f6e\uff08DataStore \u6301\u4e45\u5316\uff09\u4e0e CLEARTEXT \u7f51\u7edc\u8bbf\u95ee\n\u2022 \u7248\u672c\u68c0\u6d4b\u4e0e\u54cd\u5e94\u4f53\u5f02\u5e38\u5904\u7406\u4f18\u5316\uff1bchangelog \u4e2d 1.0.4 \u7684 downloadUrl \u6307\u5411 /releases/1.0.4/zhongleme.apk",
+        "downloadUrl": "http://8.148.250.148:5000/releases/1.0.4/zhongleme.apk",
+        "minVersionCode": 1
+    },
+    {
+        "versionCode": 3,
+        "versionName": "1.0.3",
+        "releaseDate": "2026-03-07",
+        "releaseNotes": "\u2022 \u53f7\u7801\u751f\u6210\u540e\u65b0\u589e\u8d2d\u4e70\u6ce8\u6570\u4e0e\u5408\u8ba1\u91d1\u989d\u663e\u793a\n\u2022 \u65b0\u589e\u5f00\u5956\u65e5\u671f\u63d0\u793a\uff08\u7cbe\u786e\u5230\u4e0b\u6b21\u5f00\u5956\u65e5\uff09\n\u2022 \u652f\u6301\u666e\u901a\u3001\u590d\u5f0f\u3001\u80c6\u62d6\u4e09\u79cd\u73a9\u6cd5\u7684\u6ce8\u6570\u4e0e\u91d1\u989d\u8ba1\u7b97",
+        "downloadUrl": "http://192.168.3.24:5000/releases/zhongleme.apk",
+        "minVersionCode": 2
+    },
+    {
         "versionCode": 2,
         "versionName": "1.0.2",
         "releaseDate": "2026-03-07",

@@ -179,6 +179,13 @@ private fun HistoryItem(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    if (record.drawDate.isNotEmpty()) {
+                        Text(
+                            text = "开奖日期：${record.drawDate}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
                 IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
                     Icon(
