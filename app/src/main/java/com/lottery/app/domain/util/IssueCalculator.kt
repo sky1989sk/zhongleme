@@ -53,6 +53,19 @@ object IssueCalculator {
 
     private val NATIONAL_DAY_SUSPENSION = SuspensionPeriod(10, 1, 10, 4)
 
+    /** 返回给定时间点对应彩种的下次开奖日期，格式 "YYYY-MM-DD"。 */
+    fun getNextDrawDate(lotteryType: LotteryType, timestamp: Long): String {
+        val drawDays = when (lotteryType) {
+            LotteryType.SSQ -> SSQ_DRAW_DAYS
+            LotteryType.DLT -> DLT_DRAW_DAYS
+        }
+        val cal = findNextDrawDate(timestamp, drawDays)
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH) + 1
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        return "%d-%02d-%02d".format(year, month, day)
+    }
+
     fun calculate(lotteryType: LotteryType, timestamp: Long): String {
         val drawDays = when (lotteryType) {
             LotteryType.SSQ -> SSQ_DRAW_DAYS

@@ -13,6 +13,8 @@ import com.lottery.app.domain.model.*
 fun StandardResultCard(
     lotteryType: LotteryType,
     numbers: List<LotteryNumber>,
+    ticketCount: Int = 0,
+    drawDate: String = "",
     modifier: Modifier = Modifier
 ) {
     StyledCard(modifier = modifier.fillMaxWidth()) {
@@ -27,6 +29,9 @@ fun StandardResultCard(
                 if (index > 0) Spacer(modifier = Modifier.height(8.dp))
                 NumberRow(lotteryType = lotteryType, number = num)
             }
+            if (ticketCount > 0) {
+                PurchaseInfoRow(ticketCount = ticketCount, drawDate = drawDate)
+            }
         }
     }
 }
@@ -35,6 +40,8 @@ fun StandardResultCard(
 fun MultipleResultCard(
     lotteryType: LotteryType,
     numbers: LotteryNumber,
+    ticketCount: Int = 0,
+    drawDate: String = "",
     modifier: Modifier = Modifier
 ) {
     StyledCard(modifier = modifier.fillMaxWidth()) {
@@ -63,6 +70,10 @@ fun MultipleResultCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             BallFlowRow(numbers = numbers.backNumbers, ballType = BallType.BLUE)
+
+            if (ticketCount > 0) {
+                PurchaseInfoRow(ticketCount = ticketCount, drawDate = drawDate)
+            }
         }
     }
 }
@@ -71,6 +82,8 @@ fun MultipleResultCard(
 fun DanTuoResultCard(
     lotteryType: LotteryType,
     danTuo: DanTuoNumber,
+    ticketCount: Int = 0,
+    drawDate: String = "",
     modifier: Modifier = Modifier
 ) {
     StyledCard(modifier = modifier.fillMaxWidth()) {
@@ -118,6 +131,41 @@ fun DanTuoResultCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             BallFlowRow(numbers = danTuo.backTuo, ballType = BallType.BLUE)
+
+            if (ticketCount > 0) {
+                PurchaseInfoRow(ticketCount = ticketCount, drawDate = drawDate)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PurchaseInfoRow(
+    ticketCount: Int,
+    drawDate: String,
+    modifier: Modifier = Modifier
+) {
+    val totalPrice = ticketCount * 2
+    Spacer(modifier = Modifier.height(12.dp))
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+    Spacer(modifier = Modifier.height(8.dp))
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "共 $ticketCount 注  ·  合计 $totalPrice 元",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Medium
+        )
+        if (drawDate.isNotEmpty()) {
+            Text(
+                text = "开奖：$drawDate",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
