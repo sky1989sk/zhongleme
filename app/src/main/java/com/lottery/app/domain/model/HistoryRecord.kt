@@ -6,6 +6,7 @@ data class HistoryRecord(
     val playType: PlayType,
     val result: GenerateResult,
     val issueNumber: String = "",
+    val drawDate: String = "",
     val wonStatus: WonStatus = WonStatus.UNKNOWN,
     val createdAt: Long = System.currentTimeMillis()
 )

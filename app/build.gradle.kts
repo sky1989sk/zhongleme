@@ -15,10 +15,10 @@ android {
         applicationId = "com.lottery.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.0.4"
         // 发布时改为你的版本服务地址，例如: "https://your-domain.com"
-        buildConfigField("String", "UPDATE_SERVER_BASE_URL", "\"https://8.148.250.148:5000\"")
+        buildConfigField("String", "UPDATE_SERVER_BASE_URL", "\"http://8.148.250.148:5000\"")
     }
 
     buildTypes {
@@ -79,13 +79,35 @@ tasks.register("syncUpdateServer") {
             "versionName" to vn,
             "releaseDate" to releaseDate,
             "releaseNotes" to releaseNotes,
-            "downloadUrl" to "",
+            "downloadUrl" to (if (project.hasProperty("updateServerBaseUrl")) {
+                (project.property("updateServerBaseUrl") as String).trimEnd('/') + "/releases/$vn/zhongleme.apk"
+            } else ""),
             "minVersionCode" to 1
         )
         val updated = listOf(newEntry) + existing
         updateServerDir.mkdirs()
         changelogFile.writeText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(updated)))
         logger.lifecycle("syncUpdateServer: 已写入 ${changelogFile.absolutePath} (v$vn / $vc)")
+    }
+}
+
+// 将构建产物 APK 拷贝到 update-server/releases/{versionName}/zhongleme.apk
+tasks.register("copyApkToUpdateServer") {
+    group = "publishing"
+    description = "将 app 的 debug APK 拷贝到 update-server/releases/{versionName}/zhongleme.apk"
+    dependsOn("assembleDebug")
+    doLast {
+        val vn = android.defaultConfig.versionName?.toString() ?: "1.0.0"
+        val apkDir = project.layout.buildDirectory.dir("outputs/apk/debug").get().asFile
+        val srcApk = File(apkDir, "zhongleme-debug.apk")
+        if (!srcApk.exists()) {
+            throw GradleException("APK 不存在: ${srcApk.absolutePath}，请先执行 :app:assembleDebug")
+        }
+        val releasesVersionDir = rootProject.file("update-server/releases/$vn")
+        releasesVersionDir.mkdirs()
+        val destApk = File(releasesVersionDir, "zhongleme.apk")
+        srcApk.copyTo(destApk, overwrite = true)
+        logger.lifecycle("copyApkToUpdateServer: 已拷贝到 ${destApk.absolutePath}")
     }
 }
 

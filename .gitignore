@@ -34,5 +34,8 @@ local.properties
 # Cursor
 .cursor/
 
+# update-server 持久化日志目录
+update-server/logs/
+
 # Archives
 *.zip

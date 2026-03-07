@@ -13,6 +13,8 @@ data class HistoryEntity(
     val resultJson: String,
     @ColumnInfo(defaultValue = "")
     val issueNumber: String = "",
+    @ColumnInfo(defaultValue = "")
+    val drawDate: String = "",
     @ColumnInfo(defaultValue = "0")
     val wonStatus: Int = 0,
     val createdAt: Long

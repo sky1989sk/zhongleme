@@ -92,7 +92,7 @@ Type=simple
 User=www-data
 WorkingDirectory=/opt/lottery-app/update-server
 Environment="PATH=/opt/lottery-app/update-server/venv/bin"
-ExecStart=/opt/lottery-app/update-server/venv/bin/gunicorn -b 0.0.0.0:5000 -w 1 app:app
+ExecStart=/opt/lottery-app/update-server/venv/bin/gunicorn -b 0.0.0.0:5000 -w 1 --timeout 60 app:app
 Restart=always
 
 [Install]
@@ -110,3 +110,10 @@ sudo systemctl start lottery-update
 1. 编辑 **changelog.json**：在数组**开头**插入新版本条目，包含 `versionCode`、`versionName`、`releaseDate`、`releaseNotes`，以及 **downloadUrl**、**minVersionCode**（仅最新一条需要）。
 2. 若使用 `/releases/` 提供下载，将新 APK 放到 `releases/` 目录。
 3. 若用 Docker，重启容器使 `changelog.json` 生效；若用 systemd，每次请求会读文件，无需重启。
+
+## 故障排查
+
+- **App 显示「响应 200」但「失败: unexpected end of stream」**：说明 HTTP 头已返回，但响应体未完整发送。常见原因：  
+  - Gunicorn worker 超时被杀死：增大 `--timeout`（如 60）。  
+  - 前端反向代理（如 Nginx）缓冲或提前关连接：检查 proxy 配置，确保不截断小响应体。  
+  - 网络中断：客户端已做异常捕获与日志，可重试或检查服务器/网络稳定性。

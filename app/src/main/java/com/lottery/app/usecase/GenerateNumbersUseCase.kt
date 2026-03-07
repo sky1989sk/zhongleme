@@ -23,6 +23,7 @@ class GenerateNumbersUseCase(
                 playType = PlayType.STANDARD,
                 result = result,
                 issueNumber = IssueCalculator.calculate(lotteryType, now),
+                drawDate = IssueCalculator.getNextDrawDate(lotteryType, now),
                 createdAt = now
             )
         )
@@ -39,6 +40,7 @@ class GenerateNumbersUseCase(
                 playType = PlayType.MULTIPLE,
                 result = result,
                 issueNumber = IssueCalculator.calculate(lotteryType, now),
+                drawDate = IssueCalculator.getNextDrawDate(lotteryType, now),
                 createdAt = now
             )
         )
@@ -55,6 +57,7 @@ class GenerateNumbersUseCase(
                 playType = PlayType.DAN_TUO,
                 result = result,
                 issueNumber = IssueCalculator.calculate(lotteryType, now),
+                drawDate = IssueCalculator.getNextDrawDate(lotteryType, now),
                 createdAt = now
             )
         )

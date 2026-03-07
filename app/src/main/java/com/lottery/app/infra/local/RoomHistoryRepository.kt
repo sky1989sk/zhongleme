@@ -46,6 +46,7 @@ class RoomHistoryRepository(
             playType = PlayType.valueOf(playType),
             result = ResultJsonConverter.fromJson(resultJson),
             issueNumber = issueNumber,
+            drawDate = drawDate,
             wonStatus = WonStatus.fromCode(wonStatus),
             createdAt = createdAt
         )
@@ -58,6 +59,7 @@ class RoomHistoryRepository(
             playType = playType.name,
             resultJson = ResultJsonConverter.toJson(result),
             issueNumber = issueNumber,
+            drawDate = drawDate,
             wonStatus = wonStatus.code,
             createdAt = createdAt
         )

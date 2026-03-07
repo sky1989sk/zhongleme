@@ -10,6 +10,7 @@ import com.lottery.app.infra.local.RoomHistoryRepository
 import com.lottery.app.infra.local.db.AppDatabase
 import com.lottery.app.infra.remote.StubPrizeResultRepository
 import com.lottery.app.infra.remote.UpdateApi
+import com.lottery.app.data.UpdateServerPreference
 import com.lottery.app.usecase.CheckUpdateUseCase
 import com.lottery.app.usecase.DeleteHistoryUseCase
 import com.lottery.app.usecase.GenerateNumbersUseCase
@@ -18,6 +19,7 @@ import com.lottery.app.usecase.UpdateWonStatusUseCase
 
 class AppContainer(context: Context) {
 
+    val appContext: Context = context.applicationContext
     private val database = AppDatabase.getInstance(context)
 
     val lotteryGenerator: LotteryGenerator = DefaultRandomGenerator()
@@ -29,7 +31,11 @@ class AppContainer(context: Context) {
     val updateApi by lazy { UpdateApi(BuildConfig.UPDATE_SERVER_BASE_URL) }
 
     val checkUpdateUseCase by lazy {
-        CheckUpdateUseCase(updateApi, BuildConfig.VERSION_CODE)
+        CheckUpdateUseCase(
+            updateApi,
+            BuildConfig.VERSION_CODE,
+            getEffectiveBaseUrl = suspend { UpdateServerPreference.getEffectiveBaseUrl(appContext, BuildConfig.UPDATE_SERVER_BASE_URL) }
+        )
     }
 
     val generateNumbersUseCase by lazy {

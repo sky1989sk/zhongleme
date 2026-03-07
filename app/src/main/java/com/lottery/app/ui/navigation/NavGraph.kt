@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lottery.app.di.AppContainer
+import com.lottery.app.BuildConfig
 import com.lottery.app.ui.about.AboutScreen
 import com.lottery.app.ui.about.AboutViewModel
 import com.lottery.app.ui.history.HistoryScreen
@@ -100,7 +101,12 @@ fun LotteryNavHost(
             }
             composable(Screen.About.route) {
                 val vm: AboutViewModel = viewModel(
-                    factory = AboutViewModel.Factory(container.updateApi)
+                    factory = AboutViewModel.Factory(
+                        container.appContext,
+                        container.updateApi,
+                        container.checkUpdateUseCase,
+                        BuildConfig.UPDATE_SERVER_BASE_URL
+                    )
                 )
                 AboutScreen(
                     viewModel = vm,
