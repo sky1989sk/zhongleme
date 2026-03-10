@@ -51,17 +51,26 @@ fun AboutScreen(
     val changelog by viewModel.changelog.collectAsState()
     val updateLogs by viewModel.updateLogs.collectAsState()
     val overrideUrl by viewModel.overrideUrl.collectAsState()
+    val queryOverrideUrl by viewModel.queryOverrideUrl.collectAsState()
+    val queryLogs by viewModel.queryLogs.collectAsState()
     val scrollState = rememberScrollState()
     var showDebugPanel by remember { mutableStateOf(false) }
     var versionTapCount by remember { mutableIntStateOf(0) }
     var lastTapTime by remember { mutableStateOf(0L) }
-    var urlInput by remember { mutableStateOf("") }
+    var updateUrlInput by remember { mutableStateOf("") }
+    var queryUrlInput by remember { mutableStateOf("") }
 
     LaunchedEffect(showDebugPanel) {
-        if (showDebugPanel) viewModel.loadOverrideUrl()
+        if (showDebugPanel) {
+            viewModel.loadOverrideUrl()
+            viewModel.loadQueryOverrideUrl()
+        }
     }
     LaunchedEffect(overrideUrl) {
-        if (showDebugPanel) urlInput = overrideUrl
+        if (showDebugPanel) updateUrlInput = overrideUrl
+    }
+    LaunchedEffect(queryOverrideUrl) {
+        if (showDebugPanel) queryUrlInput = queryOverrideUrl
     }
 
     Column(
@@ -102,13 +111,22 @@ fun AboutScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (showDebugPanel) {
-            DebugPanel(
-                urlInput = urlInput,
-                onUrlChange = { urlInput = it },
+            UpdateDebugPanel(
+                urlInput = updateUrlInput,
+                onUrlChange = { updateUrlInput = it },
                 defaultUrl = BuildConfig.UPDATE_SERVER_BASE_URL,
-                onSave = { viewModel.setOverrideUrl(urlInput) },
+                onSave = { viewModel.setOverrideUrl(updateUrlInput) },
                 onCheckWithLogs = { viewModel.checkUpdateWithLogs() },
                 logs = updateLogs
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            QueryDebugPanel(
+                urlInput = queryUrlInput,
+                onUrlChange = { queryUrlInput = it },
+                defaultUrl = BuildConfig.QUERY_SERVER_BASE_URL,
+                onSave = { viewModel.setQueryOverrideUrl(queryUrlInput) },
+                onCheckWithLogs = { viewModel.checkQueryServerWithLogs() },
+                logs = queryLogs
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -142,7 +160,99 @@ fun AboutScreen(
 }
 
 @Composable
-private fun DebugPanel(
+private fun QueryDebugPanel(
+    urlInput: String,
+    onUrlChange: (String) -> Unit,
+    defaultUrl: String,
+    onSave: () -> Unit,
+    onCheckWithLogs: () -> Unit,
+    logs: List<String>
+) {
+    val focusManager = LocalFocusManager.current
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "查询服务器（调试）",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = urlInput,
+                onValueChange = onUrlChange,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("查询服务地址") },
+                placeholder = {
+                    Text(
+                        if (defaultUrl.isNotBlank()) "未填写则使用: $defaultUrl" else "未配置则使用构建默认",
+                        fontSize = 12.sp
+                    )
+                },
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(onClick = { focusManager.clearFocus(); onSave() }) {
+                    Text("保存查询地址")
+                }
+                Button(onClick = { focusManager.clearFocus(); onCheckWithLogs() }) {
+                    Text("测试连通性")
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "查询服务日志",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            val logContainer = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 80.dp, max = 200.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(8.dp)
+            if (logs.isEmpty()) {
+                Box(
+                    modifier = logContainer,
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = "点击「测试连通性」查看查询接口请求过程（/api/ssq/latest）",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            } else {
+                LazyColumn(modifier = logContainer) {
+                    items(logs) { line ->
+                        Text(
+                            text = line,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UpdateDebugPanel(
     urlInput: String,
     onUrlChange: (String) -> Unit,
     defaultUrl: String,
@@ -185,7 +295,7 @@ private fun DebugPanel(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedButton(onClick = { focusManager.clearFocus(); onSave() }) {
-                    Text("保存")
+                    Text("保存更新地址")
                 }
                 Button(onClick = { focusManager.clearFocus(); onCheckWithLogs() }) {
                     Text("检查更新（带日志）")

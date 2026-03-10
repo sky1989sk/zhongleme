@@ -2,15 +2,18 @@ package com.lottery.app.di
 
 import android.content.Context
 import com.lottery.app.BuildConfig
+import com.lottery.app.data.QueryServerPreference
 import com.lottery.app.domain.generator.LotteryGenerator
 import com.lottery.app.domain.repository.HistoryRepository
 import com.lottery.app.domain.repository.PrizeResultRepository
 import com.lottery.app.infra.algorithm.DefaultRandomGenerator
 import com.lottery.app.infra.local.RoomHistoryRepository
 import com.lottery.app.infra.local.db.AppDatabase
+import com.lottery.app.infra.remote.CheckTicketApi
 import com.lottery.app.infra.remote.StubPrizeResultRepository
 import com.lottery.app.infra.remote.UpdateApi
 import com.lottery.app.data.UpdateServerPreference
+import com.lottery.app.usecase.CheckTicketUseCase
 import com.lottery.app.usecase.CheckUpdateUseCase
 import com.lottery.app.usecase.DeleteHistoryUseCase
 import com.lottery.app.usecase.GenerateNumbersUseCase
@@ -52,5 +55,19 @@ class AppContainer(context: Context) {
 
     val updateWonStatusUseCase by lazy {
         UpdateWonStatusUseCase(historyRepository)
+    }
+
+    val checkTicketApi by lazy { CheckTicketApi() }
+
+    val checkTicketUseCase by lazy {
+        CheckTicketUseCase(
+            checkTicketApi,
+            getEffectiveBaseUrl = suspend {
+                QueryServerPreference.getEffectiveBaseUrl(
+                    appContext,
+                    BuildConfig.QUERY_SERVER_BASE_URL
+                )
+            }
+        )
     }
 }

@@ -15,10 +15,12 @@ android {
         applicationId = "com.lottery.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.0.4"
-        // 发布时改为你的版本服务地址，例如: "https://your-domain.com"
+        versionCode = 5
+        versionName = "1.0.5"
+        // 发布时改为你的更新服务地址，例如: "https://update.your-domain.com"
         buildConfigField("String", "UPDATE_SERVER_BASE_URL", "\"http://8.148.250.148:5000\"")
+        // 发布时改为你的查询服务地址，例如: "https://query.your-domain.com"
+        buildConfigField("String", "QUERY_SERVER_BASE_URL", "\"http://8.148.250.148:8000\"")
     }
 
     buildTypes {
