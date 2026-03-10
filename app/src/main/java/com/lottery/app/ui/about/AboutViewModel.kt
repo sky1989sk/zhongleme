@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lottery.app.BuildConfig
+import com.lottery.app.data.QueryServerPreference
 import com.lottery.app.data.UpdateServerPreference
 import com.lottery.app.domain.model.ChangelogEntry
 import com.lottery.app.infra.remote.UpdateApi
@@ -31,6 +32,12 @@ class AboutViewModel(
 
     private val _overrideUrl = MutableStateFlow("")
     val overrideUrl: StateFlow<String> = _overrideUrl.asStateFlow()
+
+    private val _queryOverrideUrl = MutableStateFlow("")
+    val queryOverrideUrl: StateFlow<String> = _queryOverrideUrl.asStateFlow()
+
+    private val _queryLogs = MutableStateFlow<List<String>>(emptyList())
+    val queryLogs: StateFlow<List<String>> = _queryLogs.asStateFlow()
 
     init {
         loadChangelog()
@@ -66,6 +73,24 @@ class AboutViewModel(
         }
     }
 
+    fun loadQueryOverrideUrl() {
+        viewModelScope.launch {
+            val url = withContext(Dispatchers.IO) {
+                QueryServerPreference.getOverrideUrl(context)
+            }
+            _queryOverrideUrl.value = url
+        }
+    }
+
+    fun setQueryOverrideUrl(url: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                QueryServerPreference.setOverrideUrl(context, url)
+            }
+            _queryOverrideUrl.value = url.trim()
+        }
+    }
+
     fun checkUpdateWithLogs() {
         viewModelScope.launch {
             _updateLogs.value = emptyList()
@@ -75,6 +100,44 @@ class AboutViewModel(
                 }
             }
             checkUpdateUseCase.check(onLog = onLog)
+        }
+    }
+
+    fun checkQueryServerWithLogs() {
+        viewModelScope.launch {
+            _queryLogs.value = emptyList()
+            val logs = mutableListOf<String>()
+            fun log(msg: String) {
+                logs += msg
+                _queryLogs.value = logs.toList()
+            }
+            withContext(Dispatchers.IO) {
+                try {
+                    val baseUrl = QueryServerPreference.getEffectiveBaseUrl(context, BuildConfig.QUERY_SERVER_BASE_URL)
+                    if (baseUrl.isBlank()) {
+                        log("未配置查询服务器地址")
+                        return@withContext
+                    }
+                    val url = baseUrl.trimEnd('/') + "/api/ssq/latest"
+                    log("请求: $url")
+                    val client = okhttp3.OkHttpClient.Builder()
+                        .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+                        .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+                        .build()
+                    val request = okhttp3.Request.Builder().url(url).get().build()
+                    client.newCall(request).execute().use { response ->
+                        log("响应: ${response.code} ${response.message}")
+                        val body = response.body?.string()
+                        if (body.isNullOrBlank()) {
+                            log("响应体为空")
+                        } else {
+                            log("响应体前 200 字符: " + body.take(200))
+                        }
+                    }
+                } catch (e: Exception) {
+                    log("失败: ${e.message ?: "unknown"}")
+                }
+            }
         }
     }
 

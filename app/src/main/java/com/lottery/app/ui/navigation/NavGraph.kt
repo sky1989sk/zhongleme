@@ -94,7 +94,8 @@ fun LotteryNavHost(
                     factory = HistoryViewModel.Factory(
                         container.queryHistoryUseCase,
                         container.deleteHistoryUseCase,
-                        container.updateWonStatusUseCase
+                        container.updateWonStatusUseCase,
+                        container.checkTicketUseCase
                     )
                 )
                 HistoryScreen(viewModel = vm)
